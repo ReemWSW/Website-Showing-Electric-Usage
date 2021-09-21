@@ -1,0 +1,20 @@
+{
+  "name": "Website-Showing-Electric-Usage",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ReemWSW/Website-Showing-Electric-Usage.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ReemWSW/Website-Showing-Electric-Usage/issues"
+  },
+  "homepage": "https://github.com/ReemWSW/Website-Showing-Electric-Usage#readme"
+}
