@@ -2,10 +2,10 @@ const express = require('express');
 const app = express();
 const usageRoute = express.Router();
 
-// Employee model
+// Usage model
 let Usage = require('../models/Usage');
 
-// Get All Employees
+// Get All usage
 usageRoute.route('/').get((req, res) => {
   Usage.find((error, data) => {
     if (error) {
@@ -16,7 +16,7 @@ usageRoute.route('/').get((req, res) => {
   })
 })
 
-// Get single employee
+// Get single usage
 usageRoute.route('/read/:id').get((req, res) => {
   Usage.findById(req.params.id, (error, data) => {
     if (error) {
