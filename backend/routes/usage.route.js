@@ -1,5 +1,4 @@
 const express = require('express');
-const app = express();
 const usageRoute = express.Router();
 
 // Usage model
@@ -7,13 +6,14 @@ let Usage = require('../models/Usage');
 
 // Get All usage
 usageRoute.route('/').get((req, res) => {
-  Usage.find((error, data) => {
-    if (error) {
-      return next(error)
-    } else {
-      res.json(data)
-    }
-  })
+    res.render('index')
+  // Usage.find((error, data) => {
+  //   if (error) {
+  //     return next(error)
+  //   } else {
+  //     res.json(data)
+  //   }
+  // })
 })
 
 // Get single usage
