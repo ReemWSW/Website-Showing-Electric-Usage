@@ -2,23 +2,32 @@ const express = require('express');
 const usageRoute = express.Router();
 
 // Usage model
-let Usage = require('../models/Usage');
+let usageModel = require('../models/Usage');
 
 // Get All usage
 usageRoute.route('/').get((req, res) => {
-    res.render('index')
-  // Usage.find((error, data) => {
-  //   if (error) {
-  //     return next(error)
-  //   } else {
-  //     res.json(data)
-  //   }
-  // })
+  res.render('index')
+})
+
+
+// Get all data usage
+usageRoute.route('/api').get(async (req, res) => {
+  try {
+    const result = await usageModel.find();
+    res.status(201).json({
+      data: {
+        result: result,
+        message: "success",
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
 })
 
 // Get single usage
 usageRoute.route('/read/:id').get((req, res) => {
-  Usage.findById(req.params.id, (error, data) => {
+  usageModel.findById(req.params.id, (error, data) => {
     if (error) {
       return next(error)
     } else {
