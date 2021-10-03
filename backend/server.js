@@ -1,10 +1,7 @@
 let express = require('express'),
-   path = require('path'),
    mongoose = require('mongoose'),
    cors = require('cors'),
-   bodyParser = require('body-parser'),
    dbConfig = require('./database/db'),
-   usageModel = require('./models/Usage'),
    genData = require('./models/module');
 
 // Connecting with mongo db
@@ -23,14 +20,11 @@ genData.genData(); // Generate data to models
 // Setting up port with express js
 const usageRoute = require('../backend/routes/usage.route')
 const app = express();
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-   extended: false
-}));
 app.use(cors());
-app.use(express.static(path.join(__dirname, 'dist/showing-electric-usage-app')));
-app.use('/', express.static(path.join(__dirname, 'dist/showing-electric-usage-app')));
-app.use('/api', usageRoute)
+app.use(express.urlencoded({extended: true}));
+app.use(express.static(__dirname + '/public'));
+app.use('/', usageRoute);
+app.use('/api', usageRoute);
 
 // Create port
 const port = process.env.PORT || 4000;
