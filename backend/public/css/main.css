@@ -4,34 +4,14 @@
 }
 
 body {
-    background-color: coral;
-}
-.container{
-    padding:0px
+    background-color: rgb(236, 158, 130);
 }
 .container-herder {
     background-color: white;
     padding: 20px 0px;
     margin-bottom: 10px;
 }
-
-.container-day {
-    padding: 20px;
-    background-color: white;
-    margin: 5px;
-    width: auto;
+.card{
+    margin: 10px;
 }
 
-.container-week {
-    background-color: white;
-    padding: 20px;
-    margin: 5px;
-    width: auto;
-}
-
-.container-month {
-    background-color: white;
-    padding: 20px;
-    margin: 5px;
-    width: auto;
-}
