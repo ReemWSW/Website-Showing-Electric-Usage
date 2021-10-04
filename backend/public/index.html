@@ -7,15 +7,139 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Showing Electric usages</title>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/main.css">
 </head>
 
 <body>
-    <div class="container" ng-controller="ctrlGetData">
-        <p>{{ data }}</p>
+    <div class="container mt-5">
+        <header class="container-herder pt-10">
+            <h1 class="text-center">Electrical usages</h1>
+        </header>
+        <section ng-app="myApp" ng-controller="myController as ctrl">
+            <div class="container-section">
+                <div class="row">
+                    <div class="container-day col-8">
+                        <canvas id="outreach" class="chart chart-line" chart-labels="ctrl.socialChart.labels"
+                            chart-data="ctrl.socialChart.data" chart-series="ctrl.socialChart.series"
+                            chart-colors="ctrl.socialChart.colors" chart-options="ctrl.socialChart.options"></canvas>
+                    </div>
+                    <div class="container col-3">
+                        <div class="container-week"> <canvas id="outreach" class="chart chart-line"
+                                chart-labels="ctrl.socialChart.labels" chart-data="ctrl.socialChart.data"
+                                chart-series="ctrl.socialChart.series" chart-colors="ctrl.socialChart.colors"
+                                chart-options="ctrl.socialChart.options"></canvas></div>
+                        <div class="container-month"> <canvas id="outreach" class="chart chart-line"
+                                chart-labels="ctrl.socialChart.labels" chart-data="ctrl.socialChart.data"
+                                chart-series="ctrl.socialChart.series" chart-colors="ctrl.socialChart.colors"
+                                chart-options="ctrl.socialChart.options"></canvas></div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
 
-    <script src="./js/app.controller.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/angular.chartjs/latest/angular-chart.min.js"></script>
+
+
+    <script>
+        (function (angular) {
+            'use strict';
+            angular.module('myApp', ['chart.js'])
+                .controller('myController', [function () {
+                    var ctrl = this;
+                    ctrl.socialChart = {
+                        options: {
+                            scales: {
+                                xAxes: [{
+                                    stacked: true,
+                                }],
+                                yAxes: [{
+                                    stacked: true
+                                }]
+                            }
+                        },
+                        type: 'StackedBar',
+                        labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+                        series: ['FACEBOOK', 'GOOGLE', 'TWITTER', 'INSTAGRAM'],
+                        colors: ['#ED402A', '#F0AB05', '#A0B421', '#00A39F'],
+                        data: [
+                            [65, 59, 90, 81, 56, 55, 40],
+                            [28, 48, 40, 19, 96, 27, 100]
+                        ]
+                    }
+                }]);
+
+        })(window.angular);
+    </script>
+
 </body>
 
 </html>
+
+<!-- <html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Charts.js</title>
+</head>
+
+<body ng-app="myApp" ng-controller="myController as ctrl">
+    <canvas id="outreach" class="chart chart-bar" chart-labels="ctrl.socialChart.labels"
+        chart-data="ctrl.socialChart.data" chart-series="ctrl.socialChart.series" chart-colors="ctrl.socialChart.colors"
+        chart-options="ctrl.socialChart.options"></canvas>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/angular.chartjs/latest/angular-chart.min.js"></script>
+
+    <script>
+        (function (angular) {
+            'use strict';
+            angular.module('myApp', ['chart.js'])
+                .controller('myController', [function () {
+                    var ctrl = this;
+                    ctrl.socialChart = {
+                        options: {
+                            scales: {
+                                xAxes: [{
+                                    stacked: true,
+                                }],
+                                yAxes: [{
+                                    stacked: true
+                                }]
+                            }
+                        },
+                        type: 'StackedBar',
+                        labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+                        series: ['FACEBOOK', 'GOOGLE', 'TWITTER', 'INSTAGRAM'],
+                        colors: ['#ED402A', '#F0AB05', '#A0B421', '#00A39F'],
+                        data: [
+                            [65, 59, 90, 81, 56, 55, 40],
+                            [28, 48, 40, 19, 96, 27, 100]
+                        ]
+                    }
+                }]);
+
+        })(window.angular);
+    </script>
+
+
+</body>
+
+</html> -->
