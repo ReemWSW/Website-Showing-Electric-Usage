@@ -19,24 +19,25 @@
         </header>
         <section ng-app="myApp" ng-controller="myController as ctrl">
             <div class="container-section">
-                <div class="card">
+                <div class="card month">
                     <div class="card-title">Month</div>
                     <canvas id="outreach" class="chart chart-line" chart-labels="ctrl.showMonth.labels"
                         chart-data="ctrl.showMonth.data" chart-series="ctrl.showMonth.series"
                         chart-colors="ctrl.showMonth.colors" chart-options="ctrl.showMonth.options"></canvas>
                 </div>
-                <div class="card">
+                <div class="card week">
                     <div class="card-title">Week</div>
                     <canvas id="outreach" class="chart chart-line" chart-labels="ctrl.showWeek.labels"
                         chart-data="ctrl.showWeek.data" chart-series="ctrl.showWeek.series"
                         chart-colors="ctrl.showWeek.colors" chart-options="ctrl.showWeek.options"></canvas>
                 </div>
-                <div class="card">
+                <div class="card day">
                     <div class="card-title">Day</div>
-                    <canvas id="outreach" class="chart chart-line" chart-labels="ctrl.showDay.labels"
-                        chart-data="ctrl.showDay.data" chart-series="ctrl.showDay.series"
-                        chart-colors="ctrl.showDay.colors" chart-options="ctrl.showDay.options"></canvas>
+                    <canvas id="outreach" class="chart chart-line" chart-labels="ctrl.showDate.labels"
+                        chart-data="ctrl.showDate.data" chart-series="ctrl.showDate.series"
+                        chart-colors="ctrl.showDate.colors" chart-options="ctrl.showDate.options"></canvas>
                 </div>
+
             </div>
         </section>
     </div>
@@ -89,11 +90,14 @@
                         var arSumWeek = [];
                         var arWeek = [];
 
-                        var arDate = [];
+                        var arUsage = [];
                         var arTime = [];
 
                         var sumMonth = 0;
+                        var subMonth = 0;
+
                         var sumWeek = 0;
+                        var subWeek = 0;
 
                         var initMonth = 0;
                         var initWeek = 0;
@@ -108,41 +112,50 @@
 
                             var monthQuery = moment(new Date(element.time_stamp.substr(0, 16))).format("MM");
                             if (month == monthQuery) {
-                                sumMonth = sumMonth + element.electric_usage;
+                                subMonth = element.electric_usage - initMonth;
+                                sumMonth = sumMonth + subMonth;
                             } else {
                                 arMonth.push(month);
                                 month = monthQuery;
-                                arSumMonth.push(sumMonth - initMonth);
-                                initMonth = sumMonth;
+                                arSumMonth.push(sumMonth);
+
+                                initMonth = element.electric_usage;
                             }
                             if (element == $scope.data[$scope.data.length - 1]) {
                                 arMonth.push(month);
                                 month = monthQuery;
-                                arSumMonth.push(sumMonth - initMonth);
-                                initMonth = sumMonth;
+                                arSumMonth.push(sumMonth);
+
+                                initMonth = element.electric_usage;
                             }
-
-
 
                             var dayQuery = new Date(moment(new Date(element.time_stamp.substr(0, 16))).format("MMM DD, YYYY"))
                             if (dayQuery.getDay() == 6) {
-                                sumWeek = sumWeek + element.electric_usage;
+                                sumWeek = sumWeek + (element.electric_usage );
                                 arWeek.push(dayQuery.getDay())
-                                arSumWeek.push(sumWeek - initWeek);
+                                arSumWeek.push(sumWeek );
                                 initWeek = sumWeek;
                             } else {
-                                sumWeek = sumWeek + element.electric_usage;
+                                sumWeek = sumWeek + (element.electric_usage);
                             }
-
+                            // if (dayQuery.getDay() != 6) {
+                            //     sumWeek = sumWeek + (element.electric_usage - initWeek)
+                            // } else {
+                            //     sumWeek = sumWeek + (element.electric_usage - initWeek)
+                            //     arSumWeek.push(sumWeek)
+                            //     initWeek = sumWeek;
+                            // }
                             var dateQuesry = new Date(moment(new Date(element.time_stamp.substr(0, 16))).format("l"))
-
                             if (dateConv == dateQuesry.toLocaleDateString()) {
-                                var dd = moment(Date(element.electric_usage).toString()).format('LT');
-                                arDate.push(element.electric_usage)
-                                arTime.push(dd)
+                                arUsage.push(element.electric_usage)
+                                var date = new Date(element.time_stamp);
+                                var str = date.getHours() + ':' + date.getMinutes()
+                                arTime.push(str)
                             }
 
                         });
+
+                        console.log(arSumWeek);
 
                         ctrl.showMonth = {
                             options: {
@@ -159,10 +172,7 @@
                             labels: arMonth, // X
                             series: ['sensor1'], // value line eacth
                             colors: ['#F0AB05'], // color of  value
-                            data: [
-                                // [65, 59, 90, 81, 56]
-                                arSumMonth
-                            ] // Y
+                            data: [arSumMonth]  // Y
                         }
 
                         ctrl.showWeek = {
@@ -180,10 +190,10 @@
                             labels: arWeek, // X
                             series: ['sensor1'], // value line eacth
                             colors: ['#F0AB05'], // color of  value
-                            data: arSumWeek // Y
+                            data: [arSumWeek] // Y
                         }
 
-                        ctrl.showDay = {
+                        ctrl.showDate = {
                             options: {
                                 scales: {
                                     xAxes: [{
@@ -198,97 +208,16 @@
                             labels: arTime, // X
                             series: ['sensor1'], // value line eacth
                             colors: ['#F0AB05'], // color of  value
-                            data: arDate // Y
+                            data: [arUsage] // Y
                         }
-
                     });
-                    // console.log($scope.data.data.result);
 
 
                 }
             );
-            // app.controller('myController', [function ($scope,
-            //     $http) {
-            //     console.log(`${url}api`);
-            //     var ctrl = this;
-            //     ctrl.socialChart = {
-            //         options: {
-            //             scales: {
-            //                 xAxes: [{
-            //                     stacked: true,
-            //                 }],
-            //                 yAxes: [{
-            //                     stacked: true
-            //                 }]
-            //             }
-            //         },
-            //         type: 'StackedBar',
-            //         labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-            //         series: ['FACEBOOK', 'GOOGLE', 'TWITTER', 'INSTAGRAM'],
-            //         colors: ['#ED402A', '#F0AB05', '#A0B421', '#00A39F'],
-            //         data: [
-            //             [65, 59, 90, 81, 56, 55, 40],
-            //             [28, 48, 40, 19, 96, 27, 100]
-            //         ]
-            //     }
-            // }]);
-
         })(window.angular);
     </script>
 
 </body>
 
 </html>
-
-<!-- <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Charts.js</title>
-</head>
-
-<body ng-app="myApp" ng-controller="myController as ctrl">
-    <canvas id="outreach" class="chart chart-bar" chart-labels="ctrl.socialChart.labels"
-        chart-data="ctrl.socialChart.data" chart-series="ctrl.socialChart.series" chart-colors="ctrl.socialChart.colors"
-        chart-options="ctrl.socialChart.options"></canvas>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/angular.chartjs/latest/angular-chart.min.js"></script>
-
-    <script>
-        (function (angular) {
-            'use strict';
-            angular.module('myApp', ['chart.js'])
-                .controller('myController', [function () {
-                    var ctrl = this;
-                    ctrl.socialChart = {
-                        options: {
-                            scales: {
-                                xAxes: [{
-                                    stacked: true,
-                                }],
-                                yAxes: [{
-                                    stacked: true
-                                }]
-                            }
-                        },
-                        type: 'StackedBar',
-                        labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-                        series: ['FACEBOOK', 'GOOGLE', 'TWITTER', 'INSTAGRAM'],
-                        colors: ['#ED402A', '#F0AB05', '#A0B421', '#00A39F'],
-                        data: [
-                            [65, 59, 90, 81, 56, 55, 40],
-                            [28, 48, 40, 19, 96, 27, 100]
-                        ]
-                    }
-                }]);
-
-        })(window.angular);
-    </script>
-
-
-</body>
-
-</html> -->
