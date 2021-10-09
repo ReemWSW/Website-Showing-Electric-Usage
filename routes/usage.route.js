@@ -9,7 +9,8 @@ usageRoute.route('/', usageController.render) // show Page index
 
 //get all data in db
 usageRoute.route('/api').get((req, res, next) => {
-  usageModel.find((error, data) => {
+  usageModel.find({ limit: 1 }, (error, data) => {
+    console.log(data);
     if (error) {
       return next(error)
     } else {
