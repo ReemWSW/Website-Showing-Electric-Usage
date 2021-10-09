@@ -1,8 +1,7 @@
 let express = require('express'),
    mongoose = require('mongoose'),
    cors = require('cors'),
-   dbConfig = require('./database/db'),
-   genData = require('./models/module');
+   dbConfig = require('./database/db');
 
 // Connecting with mongo db
 mongoose.Promise = global.Promise;
