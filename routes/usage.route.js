@@ -6,10 +6,11 @@ let usageController = require('../controllers/usage.controller');
 let usageModel = require('../models/Usage');
 
 usageRoute.route('/', usageController.render) // show Page index
-// usageRoute.route('/api', usageController.getData)  // Get all data usage
 
+//get all data in db
 usageRoute.route('/api').get((req, res, next) => {
-  usageModel.find((error, data) => {
+  usageModel.find({ limit: 1 }, (error, data) => {
+    console.log(data);
     if (error) {
       return next(error)
     } else {
@@ -17,5 +18,6 @@ usageRoute.route('/api').get((req, res, next) => {
     }
   })
 })
+
 
 module.exports = usageRoute
