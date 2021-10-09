@@ -19,11 +19,9 @@ usageRoute.route('/api').get((req, res, next) => {
 })
 
 
-// 2017-01-01T01:15:26.625Z
-
 // get data with date weekly
 //  https://[hostname]/api/timestamp?date=2019-12-12
-usageRoute.route("/api/weekly/timestamp").get(function (req, res, next) {
+usageRoute.route("/api/weekly/timestamp").get((req, res, next) => {
   var reqDate = req.query.date
   usageModel.find({
     time_stamp: {
@@ -39,4 +37,29 @@ usageRoute.route("/api/weekly/timestamp").get(function (req, res, next) {
   })
 });
 
+// get data realtime 
+//  https://[hostname]/api/realtime
+usageRoute.route("/api/realtime").get((req, res, next) => {
+  var today = new Date();
+  var date = today.getFullYear() + '-' + prependZero((today.getMonth() + 1)) + '-' + prependZero(today.getDate());
+  usageModel.find({
+    time_stamp: {
+      $gt: new Date(`${date}T00:00:00.625z`),
+      $lte: new Date(`${date}T23:55:00.625z`)
+    }
+  }, (error, data) => {
+    if (error) {
+      next(error)
+    } else {
+      res.json(data)
+    }
+  })
+})
+
+function prependZero(number) {
+  if (number <= 9)
+    return "0" + number;
+  else
+    return number;
+}
 module.exports = usageRoute
