@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Showing Electric usages</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+
+<body>
+    <div class="container">
+        <header class="container-herder pt-10">
+            <h1 class="text-center">Electrical usages</h1>
+        </header>
+        <section ng-app="myApp" ng-controller="myController as ctrl">
+            <div class="container-section">
+                <div class="card month">
+                    <div class="card-title">Month</div>
+                    <canvas id="outreach" class="chart chart-line" chart-labels="ctrl.showMonth.labels"
+                        chart-data="ctrl.showMonth.data" chart-series="ctrl.showMonth.series"
+                        chart-colors="ctrl.showMonth.colors" chart-options="ctrl.showMonth.options"></canvas>
+                </div>
+                <div class="card week">
+                    <div class="card-title">Week</div>
+                    <canvas id="outreach" class="chart chart-line" chart-labels="ctrl.showWeek.labels"
+                        chart-data="ctrl.showWeek.data" chart-series="ctrl.showWeek.series"
+                        chart-colors="ctrl.showWeek.colors" chart-options="ctrl.showWeek.options"></canvas>
+                </div>
+                <div class="card day">
+                    <div class="card-title">Day</div>
+                    <canvas id="outreach" class="chart chart-line" chart-labels="ctrl.showDate.labels"
+                        chart-data="ctrl.showDate.data" chart-series="ctrl.showDate.series"
+                        chart-colors="ctrl.showDate.colors" chart-options="ctrl.showDate.options"></canvas>
+                </div>
+
+            </div>
+        </section>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/angular.chartjs/latest/angular-chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment-with-locales.min.js"></script>
+
+    <script>
+        (function (angular) {
+            'use strict';
+            var app = angular.module('myApp', ['chart.js'])
+            const url = window.location.href;
+
+            app.controller('ShowMonth', ['$scope', function ($scope) {
+                $scope.labels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+                $scope.active = true;
+                $scope.data = [
+                    [65, 59, 90, 81, 56, 55, 40],
+                    [28, 48, 40, 19, 96, 27, 100]
+                ];
+            }]);
+
+            app.controller(
+                "myController",
+                function (
+                    $scope,
+                    $http
+                ) {
+                    var data;
+                    var ctrl = this;
+                    $http.get(`${url}api`).then(function (response) {
+
+                        var arSumMonth = [];
+                        var arMonth = [];
+
+                        var arSumWeek = [];
+                        var arWeek = [];
+
+                        var arUsage = [];
+                        var arTime = [];
+
+                        var sumMonth = 0;
+                        var subMonth = 0;
+
+                        var sumWeek = 0;
+                        var subWeek = 0;
+
+                        var initMonth = 0;
+                        var initWeek = 0;
+
+                        var dateNow = Date.now();
+                        var dateConv = new Date(dateNow).toLocaleDateString()
+                        // expected output "8/30/2017"  
+
+                        $scope.data = response.data.data.result;
+                        var month = moment(new Date($scope.data[0].time_stamp.substr(0, 16))).format("MM");
+                        $scope.data.forEach(element => {
+
+                            var monthQuery = moment(new Date(element.time_stamp.substr(0, 16))).format("MM");
+                            if (month == monthQuery) {
+                                subMonth = element.electric_usage - initMonth;
+                                sumMonth = sumMonth + subMonth;
+                            } else {
+                                arMonth.push(month);
+                                month = monthQuery;
+                                arSumMonth.push(sumMonth);
+
+                                initMonth = element.electric_usage;
+                            }
+                            if (element == $scope.data[$scope.data.length - 1]) {
+                                arMonth.push(month);
+                                month = monthQuery;
+                                arSumMonth.push(sumMonth);
+
+                                initMonth = element.electric_usage;
+                            }
+
+                            var dayQuery = new Date(moment(new Date(element.time_stamp.substr(0, 16))).format("MMM DD, YYYY"))
+                            if (dayQuery.getDay() == 6) {
+                                sumWeek = sumWeek + (element.electric_usage );
+                                arWeek.push(dayQuery.getDay())
+                                arSumWeek.push(sumWeek );
+                                initWeek = sumWeek;
+                            } else {
+                                sumWeek = sumWeek + (element.electric_usage);
+                            }
+                            // if (dayQuery.getDay() != 6) {
+                            //     sumWeek = sumWeek + (element.electric_usage - initWeek)
+                            // } else {
+                            //     sumWeek = sumWeek + (element.electric_usage - initWeek)
+                            //     arSumWeek.push(sumWeek)
+                            //     initWeek = sumWeek;
+                            // }
+                            var dateQuesry = new Date(moment(new Date(element.time_stamp.substr(0, 16))).format("l"))
+                            if (dateConv == dateQuesry.toLocaleDateString()) {
+                                arUsage.push(element.electric_usage)
+                                var date = new Date(element.time_stamp);
+                                var str = date.getHours() + ':' + date.getMinutes()
+                                arTime.push(str)
+                            }
+
+                        });
+
+                        console.log(arSumWeek);
+
+                        ctrl.showMonth = {
+                            options: {
+                                scales: {
+                                    xAxes: [{
+                                        stacked: true,
+                                    }],
+                                    yAxes: [{
+                                        stacked: true
+                                    }]
+                                }
+                            },
+                            type: 'StackedBar', // type of chart
+                            labels: arMonth, // X
+                            series: ['sensor1'], // value line eacth
+                            colors: ['#F0AB05'], // color of  value
+                            data: [arSumMonth]  // Y
+                        }
+
+                        ctrl.showWeek = {
+                            options: {
+                                scales: {
+                                    xAxes: [{
+                                        stacked: true,
+                                    }],
+                                    yAxes: [{
+                                        stacked: true
+                                    }]
+                                }
+                            },
+                            type: 'StackedBar', // type of chart
+                            labels: arWeek, // X
+                            series: ['sensor1'], // value line eacth
+                            colors: ['#F0AB05'], // color of  value
+                            data: [arSumWeek] // Y
+                        }
+
+                        ctrl.showDate = {
+                            options: {
+                                scales: {
+                                    xAxes: [{
+                                        stacked: true,
+                                    }],
+                                    yAxes: [{
+                                        stacked: true
+                                    }]
+                                }
+                            },
+                            type: 'StackedBar', // type of chart
+                            labels: arTime, // X
+                            series: ['sensor1'], // value line eacth
+                            colors: ['#F0AB05'], // color of  value
+                            data: [arUsage] // Y
+                        }
+                    });
+
+
+                }
+            );
+        })(window.angular);
+    </script>
+
+</body>
+
+</html>
