@@ -2,27 +2,20 @@ const express = require('express');
 const usageRoute = express.Router();
 
 // Usage model
+let usageController = require('../controllers/usage.controller');
 let usageModel = require('../models/Usage');
 
-// Get All usage
-usageRoute.route('/').get((req, res) => {
-  res.render('index')
+usageRoute.route('/', usageController.render) // show Page index
+// usageRoute.route('/api', usageController.getData)  // Get all data usage
+
+usageRoute.route('/api').get((req, res, next) => {
+  usageModel.find((error, data) => {
+    if (error) {
+      return next(error)
+    } else {
+      res.json(data)
+    }
+  })
 })
 
-
-// Get all data usage
-usageRoute.route('/api').get((req, res) => {
-  try {
-    const result = usageModel.find();
-    res.status(201).json({
-      data: {
-        result: result,
-        message: "success",
-      },
-    });
-  } catch (error) {
-    next(error);
-  }
-})
-
-module.exports = usageRoute;
+module.exports = usageRoute
