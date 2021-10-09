@@ -14,29 +14,24 @@
 
 <body>
     <div class="container">
-        
+
         <header class="container-herder pt-10">
             <h1 class="text-center">Electrical usages from a power meter</h1>
         </header>
-        <section ng-app="myApp" ng-controller="myController as ctrl">
-            <div class="container-section">
+        <section ng-app="myApp">
+            <div class="container-section" ng-controller='realtimeController'>
                 <div class="card day">
-                    <div class="card-title">Real time graph of electric usage with resolution 15 minute </div>
-                    <canvas id="outreach" class="chart chart-line" chart-labels="ctrl.showMonth.labels"
-                        chart-data="ctrl.showMonth.data" chart-series="ctrl.showMonth.series"
-                        chart-colors="ctrl.showMonth.colors" chart-options="ctrl.showMonth.options"></canvas>
+                    <canvas class="chart chart-line" chart-data="data" chart-labels="labels"></canvas>
                 </div>
-                <div class="card week">
+                <div class="card week" ng-controller="weeklyController">
                     <div class="card-title">Summarize graphs weekly</div>
-                    <canvas id="outreach" class="chart chart-line" chart-labels="ctrl.showWeek.labels"
-                        chart-data="ctrl.showWeek.data" chart-series="ctrl.showWeek.series"
-                        chart-colors="ctrl.showWeek.colors" chart-options="ctrl.showWeek.options"></canvas>
+                    <canvas class="chart chart-bar" chart-data="data" chart-labels="labels" chart-options="options"
+                        chart-series="series"></canvas>
                 </div>
-                <div class="card month">
+                <div class="card month" ng-controller="monthController">
                     <div class="card-title">Summarize grahs monthly</div>
-                    <canvas id="outreach" class="chart chart-line" chart-labels="ctrl.showDate.labels"
-                        chart-data="ctrl.showDate.data" chart-series="ctrl.showDate.series"
-                        chart-colors="ctrl.showDate.colors" chart-options="ctrl.showDate.options"></canvas>
+                    <canvas class="chart chart-bar" chart-data="data" chart-labels="labels" chart-options="options"
+                        chart-series="series"></canvas>
                 </div>
                 <h1></h1>
 
@@ -67,156 +62,53 @@
             var app = angular.module('myApp', ['chart.js'])
             const url = window.location.href;
 
-            app.controller('ShowMonth', ['$scope', function ($scope) {
-                $scope.labels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-                $scope.active = true;
+            app.controller('monthController', ['$scope', function ($scope) {
+                $scope.labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'August', 'October', 'November', 'December'];
+                $scope.type = 'StackedBar';
+                $scope.options = {
+                    scales: {
+                        xAxes: [{
+                            stacked: true,
+                        }],
+                        yAxes: [{
+                            stacked: true
+                        }]
+                    }
+                };
+
                 $scope.data = [
-                    [65, 59, 90, 81, 56, 55, 40],
-                    [28, 48, 40, 19, 96, 27, 100]
+                    [28, 48, 40, 50, 96, 27, 50, 28, 48, 40, 19, 40]
                 ];
             }]);
 
-            app.controller(
-                "myController",
-                function (
-                    $scope,
-                    $http
-                ) {
-                    var data;
-                    var ctrl = this;
-                    $http.get(`${url}api`).then(function (response) {
+            app.controller('weeklyController', ['$scope', function ($scope) {
+                $scope.labels = ['week01', 'week02', 'week03', 'week04'];
+                $scope.type = 'StackedBar';
+                $scope.options = {
+                    scales: {
+                        xAxes: [{
+                            stacked: true,
+                        }],
+                        yAxes: [{
+                            stacked: true
+                        }]
+                    }
+                };
 
-                        var arSumMonth = [];
-                        var arMonth = [];
+                $scope.data = [
+                    [28, 48, 40, 19]
+                ];
+            }]);
 
-                        var arSumWeek = [];
-                        var arWeek = [];
-
-                        var arUsage = [];
-                        var arTime = [];
-
-                        var sumMonth = 0;
-                        var subMonth = 0;
-
-                        var sumWeek = 0;
-                        var subWeek = 0;
-
-                        var initMonth = 0;
-                        var initWeek = 0;
-
-                        var dateNow = Date.now();
-                        var dateConv = new Date(dateNow).toLocaleDateString()
-                        // expected output "8/30/2017"  
-
-                        $scope.data = response.data.data.result;
-                        var month = moment(new Date($scope.data[0].time_stamp.substr(0, 16))).format("MM");
-                        $scope.data.forEach(element => {
-
-                            var monthQuery = moment(new Date(element.time_stamp.substr(0, 16))).format("MM");
-                            if (month == monthQuery) {
-                                subMonth = element.electric_usage - initMonth;
-                                sumMonth = sumMonth + subMonth;
-                            } else {
-                                arMonth.push(month);
-                                month = monthQuery;
-                                arSumMonth.push(sumMonth);
-
-                                initMonth = element.electric_usage;
-                            }
-                            if (element == $scope.data[$scope.data.length - 1]) {
-                                arMonth.push(month);
-                                month = monthQuery;
-                                arSumMonth.push(sumMonth);
-
-                                initMonth = element.electric_usage;
-                            }
-
-                            var dayQuery = new Date(moment(new Date(element.time_stamp.substr(0, 16))).format("MMM DD, YYYY"))
-                            if (dayQuery.getDay() == 6) {
-                                sumWeek = sumWeek + (element.electric_usage );
-                                arWeek.push(dayQuery.getDay())
-                                arSumWeek.push(sumWeek );
-                                initWeek = sumWeek;
-                            } else {
-                                sumWeek = sumWeek + (element.electric_usage);
-                            }
-                            // if (dayQuery.getDay() != 6) {
-                            //     sumWeek = sumWeek + (element.electric_usage - initWeek)
-                            // } else {
-                            //     sumWeek = sumWeek + (element.electric_usage - initWeek)
-                            //     arSumWeek.push(sumWeek)
-                            //     initWeek = sumWeek;
-                            // }
-                            var dateQuesry = new Date(moment(new Date(element.time_stamp.substr(0, 16))).format("l"))
-                            if (dateConv == dateQuesry.toLocaleDateString()) {
-                                arUsage.push(element.electric_usage)
-                                var date = new Date(element.time_stamp);
-                                var str = date.getHours() + ':' + date.getMinutes()
-                                arTime.push(str)
-                            }
-
-                        });
-
-                        console.log(arSumWeek);
-
-                        ctrl.showMonth = {
-                            options: {
-                                scales: {
-                                    xAxes: [{
-                                        stacked: true,
-                                    }],
-                                    yAxes: [{
-                                        stacked: true
-                                    }]
-                                }
-                            },
-                            type: 'StackedBar', // type of chart
-                            labels: arMonth, // X
-                            series: ['sensor1'], // value line eacth
-                            colors: ['#F0AB05'], // color of  value
-                            data: [arSumMonth]  // Y
-                        }
-
-                        ctrl.showWeek = {
-                            options: {
-                                scales: {
-                                    xAxes: [{
-                                        stacked: true,
-                                    }],
-                                    yAxes: [{
-                                        stacked: true
-                                    }]
-                                }
-                            },
-                            type: 'StackedBar', // type of chart
-                            labels: arWeek, // X
-                            series: ['sensor1'], // value line eacth
-                            colors: ['#F0AB05'], // color of  value
-                            data: [arSumWeek] // Y
-                        }
-
-                        ctrl.showDate = {
-                            options: {
-                                scales: {
-                                    xAxes: [{
-                                        stacked: true,
-                                    }],
-                                    yAxes: [{
-                                        stacked: true
-                                    }]
-                                }
-                            },
-                            type: 'StackedBar', // type of chart
-                            labels: arTime, // X
-                            series: ['sensor1'], // value line eacth
-                            colors: ['#F0AB05'], // color of  value
-                            data: [arUsage] // Y
-                        }
-                    });
+            app.controller('realtimeController', ['$scope', function ($scope) {
+                $scope.labels = ['00:45', '01:00', '01:15', '01:30', '01:45', '02:00', '02:15', '02:30', '02:45', '03:00', '03:15', '03:30', '03:45'];
+                $scope.active = true;
+                $scope.data = [
+                    [28, 48, 40, 50, 96, 27, 50, 28, 48, 40, 19, 96, 40]
+                ];
+            }]);
 
 
-                }
-            );
         })(window.angular);
     </script>
 
