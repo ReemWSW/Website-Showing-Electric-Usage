@@ -14,29 +14,31 @@
 
 <body>
     <div class="container">
+        
         <header class="container-herder pt-10">
-            <h1 class="text-center">Electrical usages</h1>
+            <h1 class="text-center">Electrical usages from a power meter</h1>
         </header>
         <section ng-app="myApp" ng-controller="myController as ctrl">
             <div class="container-section">
-                <div class="card month">
-                    <div class="card-title">Month</div>
+                <div class="card day">
+                    <div class="card-title">Real time graph of electric usage with resolution 15 minute </div>
                     <canvas id="outreach" class="chart chart-line" chart-labels="ctrl.showMonth.labels"
                         chart-data="ctrl.showMonth.data" chart-series="ctrl.showMonth.series"
                         chart-colors="ctrl.showMonth.colors" chart-options="ctrl.showMonth.options"></canvas>
                 </div>
                 <div class="card week">
-                    <div class="card-title">Week</div>
+                    <div class="card-title">Summarize graphs weekly</div>
                     <canvas id="outreach" class="chart chart-line" chart-labels="ctrl.showWeek.labels"
                         chart-data="ctrl.showWeek.data" chart-series="ctrl.showWeek.series"
                         chart-colors="ctrl.showWeek.colors" chart-options="ctrl.showWeek.options"></canvas>
                 </div>
-                <div class="card day">
-                    <div class="card-title">Day</div>
+                <div class="card month">
+                    <div class="card-title">Summarize grahs monthly</div>
                     <canvas id="outreach" class="chart chart-line" chart-labels="ctrl.showDate.labels"
                         chart-data="ctrl.showDate.data" chart-series="ctrl.showDate.series"
                         chart-colors="ctrl.showDate.colors" chart-options="ctrl.showDate.options"></canvas>
                 </div>
+                <h1></h1>
 
             </div>
         </section>

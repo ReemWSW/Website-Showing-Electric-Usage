@@ -4,30 +4,49 @@
 }
 
 body {
-    background-color: rgb(236, 158, 130);
+    background-color: rgb(250, 125, 73);
 }
 
 .container-herder {
     background-color: white;
     padding: 20px 0px;
-    margin-bottom: 10px;
+    margin-bottom: 30px;
+    border-radius: 30px 30px 30px 30px;
+    color:blue
+
 }
 
 .container-section {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: 
+        'day day'
+        'week month'
+        ;
+    grid-template-rows: 1fr 1fr;
+    gap: 30px;
+}
+
+.day {
+    grid-area: day;
+    text-align: center;
+    border-radius: 30px 30px 5px 5px;
+    color: rgb(255, 67, 16);
+    font-size: 25px;
+}
+
+.week {
+    grid-area: week;
+    text-align: center;
+    border-radius: 30px 30px 5px 5px;
+    color: rgb(255, 67, 16);
+    font-size: 25px;
 }
 
 .month {
-    grid-column: 1 / 3;
-    grid-row: 1 / 3;
-}
-.week{
-    grid-column: 3;
-    grid-row: 1;
-}
-.day{
-    grid-column: 3;
-    grid-row: 2;
+    grid-area: month;
+    text-align: center;
+    border-radius: 30px 30px 5px 5px;
+    color: rgb(255, 67, 16);
+    font-size: 25px;
 }
