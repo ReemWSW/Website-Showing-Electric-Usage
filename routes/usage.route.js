@@ -18,9 +18,8 @@ usageRoute.route('/api').get((req, res, next) => {
   })
 })
 
-// 2017-01-01T00:00:26.625Z
 // get data with date weekly
-//  https://[hostname]/api/timestamp?date=2019-12-12
+//  https://[hostname]/api/weekly/timestamp?date=2019-12-12
 usageRoute.route("/api/weekly/timestamp").get((req, res, next) => {
   var reqDate = req.query.date
   var dateCon = new Date(reqDate)
@@ -68,6 +67,32 @@ usageRoute.route("/api/realtime").get((req, res, next) => {
     }
   })
 })
+
+// get data with year 
+//  https://[hostname]/api/year/timestamp?date=2019-12-12
+usageRoute.route("/api/year/timestamp").get((req, res, next) => {
+  var reqDate = req.query.date
+  var dateCon = new Date(reqDate)
+  var year = dateCon.getFullYear()
+  usageModel.find({
+    time_stamp: {
+      $gt: new Date(`${year}-01-01T00:00:26.625Z`),
+      $lte: new Date(`${year}-12-31T23:59:26.625Z`)
+    }
+  }, (error, data) => {
+    if (error) {
+      next(error)
+    } else {
+      res.status(201).json({
+        data: {
+          result: data,
+          message: "Success",
+        },
+      });
+    }
+  })
+})
+
 
 function prependZero(number) {
   if (number <= 9)
