@@ -11,9 +11,9 @@ usageRoute.route('/').get((req, res) => {
 
 
 // Get all data usage
-usageRoute.route('/api').get(async (req, res) => {
+usageRoute.route('/api').get((req, res) => {
   try {
-    const result = await usageModel.find();
+    const result = usageModel.find();
     res.status(201).json({
       data: {
         result: result,
@@ -24,17 +24,5 @@ usageRoute.route('/api').get(async (req, res) => {
     next(error);
   }
 })
-
-// Get single usage
-usageRoute.route('/read/:id').get((req, res) => {
-  usageModel.findById(req.params.id, (error, data) => {
-    if (error) {
-      return next(error)
-    } else {
-      res.json(data)
-    }
-  })
-})
-
 
 module.exports = usageRoute;

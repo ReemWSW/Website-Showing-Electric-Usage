@@ -18,7 +18,7 @@ mongoose.connect(dbConfig.db, {
 genData.genData(); // Generate data to models
 
 // Setting up port with express js
-const usageRoute = require('../backend/routes/usage.route')
+const usageRoute = require('./routes/usage.route')
 const app = express();
 app.use(cors());
 app.use(express.urlencoded({extended: true}));
