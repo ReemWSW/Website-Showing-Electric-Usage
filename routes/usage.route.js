@@ -26,7 +26,6 @@ usageRoute.route("/api/weekly/timestamp").get((req, res, next) => {
   var dateCon = new Date(reqDate)
   var month = dateCon.getMonth() + 1
   var year = dateCon.getFullYear()
-  console.log(year);
   usageModel.find({
     time_stamp: {
       $gt: new Date(`${year}-${month}-01T00:00:26.625Z`),
@@ -36,7 +35,12 @@ usageRoute.route("/api/weekly/timestamp").get((req, res, next) => {
     if (error) {
       next(error)
     } else {
-      res.json(data)
+      res.status(201).json({
+        data: {
+          result: data,
+          message: "Success",
+        },
+      });
     }
   })
 });
@@ -55,7 +59,12 @@ usageRoute.route("/api/realtime").get((req, res, next) => {
     if (error) {
       next(error)
     } else {
-      res.json(data)
+      res.status(201).json({
+        data: {
+          result: data,
+          message: "Success",
+        },
+      });
     }
   })
 })
