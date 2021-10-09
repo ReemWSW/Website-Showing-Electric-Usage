@@ -18,12 +18,11 @@ body {
 
 .container-section {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2,1fr);
     grid-template-areas: 
         'day day'
-        'week month'
-        ;
-    grid-template-rows: 1fr 1fr;
+        'week month';
+    grid-template-rows: auto;
     gap: 30px;
 }
 
