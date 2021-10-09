@@ -7,23 +7,21 @@ body {
     background-color: rgb(250, 125, 73);
 }
 
+
 .container-herder {
+    margin-top: 20px;
     background-color: white;
     padding: 20px 0px;
     margin-bottom: 30px;
-    border-radius: 30px 30px 30px 30px;
-    color:blue
-
+    border-radius: 20px 20px 20px 20px;
+    color: blue
 }
 
 .container-section {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-areas: 
-        'day day'
-        'week month'
-        ;
-    grid-template-rows: 1fr 1fr;
+    grid-template-areas: 'day day' 'week month';
+    grid-template-rows: auto;
     gap: 30px;
 }
 
@@ -31,23 +29,25 @@ body {
     padding: 20px;
     grid-area: day;
     text-align: center;
-    border-radius: 30px 30px 5px 5px;
+    border-radius: 20px 20px 20px 20px;
     color: rgb(255, 67, 16);
     font-size: 25px;
 }
 
 .week {
+    padding: 20px;
     grid-area: week;
     text-align: center;
-    border-radius: 30px 30px 5px 5px;
+    border-radius: 20px 20px 20px 20px;
     color: rgb(255, 67, 16);
     font-size: 25px;
 }
 
 .month {
+    padding: 20px;
     grid-area: month;
     text-align: center;
-    border-radius: 30px 30px 5px 5px;
+    border-radius: 20px 20px 20px 20px;
     color: rgb(255, 67, 16);
     font-size: 25px;
 }

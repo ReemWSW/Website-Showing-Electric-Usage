@@ -14,7 +14,6 @@
 
 <body>
     <div class="container">
-
         <header class="container-herder pt-10">
             <h1 class="text-center">Electrical usages from a power meter</h1>
         </header>
@@ -63,7 +62,7 @@
             const url = window.location.href;
 
             app.controller('monthController', ['$scope', function ($scope) {
-                $scope.labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'August', 'October', 'November', 'December'];
+                $scope.labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
                 $scope.type = 'StackedBar';
                 $scope.options = {
                     scales: {
