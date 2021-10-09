@@ -15,7 +15,6 @@ mongoose.connect(dbConfig.db, {
       console.log('Database could not connected: ' + error)
    }
 )
-genData.genData(); // Generate data to models
 
 // Setting up port with express js
 const usageRoute = require('./routes/usage.route')
