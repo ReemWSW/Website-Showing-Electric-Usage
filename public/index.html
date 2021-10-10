@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/date.css">
 </head>
 
 <body>
@@ -22,11 +23,15 @@
             <div class="container-section" ng-controller='realtimeController'>
                 <div class="card day">
                     <canvas class="chart chart-line" chart-data="data" chart-labels="labels"></canvas>
+                    <label></label>
+                    <input type="date" name="" max="" id="Date">
+                    <br><br>
                 </div>
                 <div class="card week" ng-controller="weeklyController">
                     <div class="card-title">Summarize graphs weekly</div>
                     <canvas class="chart chart-bar" chart-data="data" chart-labels="labels" chart-options="options"
                         chart-series="series"></canvas>
+                  
                 </div>
                 <div class="card month" ng-controller="monthController">
                     <div class="card-title">Summarize grahs monthly</div>
@@ -37,6 +42,7 @@
 
             </div>
         </section>
+        
     </div>
 
 
