@@ -14,12 +14,13 @@
 
 <body>
     <div class="container">
+
         <header class="container-herder pt-10">
             <h1 class="text-center">Electrical usages from a power meter</h1>
         </header>
         <section ng-app="myApp">
-            <div class="container-section" ng-controller='realtimeController'>
-                <div class="card day">
+            <div class="container-section">
+                <div class="card day" ng-controller='realtimeController'>
                     <canvas class="chart chart-line" chart-data="data" chart-labels="labels"></canvas>
                 </div>
                 <div class="card week" ng-controller="weeklyController">
@@ -27,6 +28,7 @@
                     <canvas class="chart chart-bar" chart-data="data" chart-labels="labels" chart-options="options"
                         chart-series="series"></canvas>
                 </div>
+
                 <div class="card month" ng-controller="monthController">
                     <div class="card-title">Summarize grahs monthly</div>
                     <canvas class="chart chart-bar" chart-data="data" chart-labels="labels" chart-options="options"
@@ -61,52 +63,66 @@
             var app = angular.module('myApp', ['chart.js'])
             const url = window.location.href;
 
-            app.controller('monthController', ['$scope', function ($scope) {
-                $scope.labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                $scope.type = 'StackedBar';
-                $scope.options = {
-                    scales: {
-                        xAxes: [{
-                            stacked: true,
-                        }],
-                        yAxes: [{
-                            stacked: true
-                        }]
-                    }
-                };
+            app.controller('realtimeController', function ($scope, $http) {
+                $http.get(`${url}api/realtime`).then((res) => {
+                    var today = new Date();
+                    var hoursNow = today.getHours();
+                    console.log(hoursNow);
+                    console.log(res.data);
+                    // console.log(res.data.data);
+                    $scope.labels = ['00:45', '01:00', '01:15', '01:30', '01:45', '02:00', '02:15', '02:30', '02:45', '03:00', '03:15', '03:30', '03:45'];
+                    // $scope.labels = []
+                    $scope.active = true;
+                    $scope.data = [
+                        [28, 48, 40, 50, 96, 27, 50, 28, 48, 40, 19, 96, 40]
+                    ];
+                })
+            });
 
-                $scope.data = [
-                    [28, 48, 40, 50, 96, 27, 50, 28, 48, 40, 19, 40]
-                ];
-            }]);
 
-            app.controller('weeklyController', ['$scope', function ($scope) {
-                $scope.labels = ['week01', 'week02', 'week03', 'week04'];
-                $scope.type = 'StackedBar';
-                $scope.options = {
-                    scales: {
-                        xAxes: [{
-                            stacked: true,
-                        }],
-                        yAxes: [{
-                            stacked: true
-                        }]
-                    }
-                };
+            app.controller('weeklyController', function ($scope, $http) {
+                $http.get(`${url}api/weekly/timestamp?date=2019-12-12`).then((res) => {
+                    // console.log(res.data.data);
+                    $scope.labels = ['week01', 'week02', 'week03', 'week04'];
+                    $scope.type = 'StackedBar';
+                    $scope.options = {
+                        scales: {
+                            xAxes: [{
+                                stacked: true,
+                            }],
+                            yAxes: [{
+                                stacked: true
+                            }]
+                        }
+                    };
 
-                $scope.data = [
-                    [28, 48, 40, 19]
-                ];
-            }]);
+                    $scope.data = [
+                        [28, 48, 40, 19]
+                    ];
+                })
+            });
 
-            app.controller('realtimeController', ['$scope', function ($scope) {
-                $scope.labels = ['00:45', '01:00', '01:15', '01:30', '01:45', '02:00', '02:15', '02:30', '02:45', '03:00', '03:15', '03:30', '03:45'];
-                $scope.active = true;
-                $scope.data = [
-                    [28, 48, 40, 50, 96, 27, 50, 28, 48, 40, 19, 96, 40]
-                ];
-            }]);
+            app.controller('monthController', function ($scope, $http) {
+                $http.get(`${url}api/month/timestamp?date=2019-12-12`).then((res) => {
+                    // console.log(res.data.data);
+                    $scope.labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                    $scope.type = 'StackedBar';
+                    $scope.options = {
+                        scales: {
+                            xAxes: [{
+                                stacked: true,
+                            }],
+                            yAxes: [{
+                                stacked: true
+                            }]
+                        }
+                    };
 
+                    $scope.data = [
+                        [28, 48, 40, 50, 96, 27, 50, 28, 48, 40, 19, 40]
+                    ];
+                })
+            })
 
         })(window.angular);
     </script>
