@@ -28,7 +28,6 @@ body {
 }
 
 .day {
-    padding: 20px;
     grid-area: day;
     text-align: center;
     border-radius: 20px 20px 20px 20px;
@@ -37,7 +36,6 @@ body {
 }
 
 .week {
-    padding: 20px;
     grid-area: week;
     text-align: center;
     border-radius: 20px 20px 20px 20px;
@@ -46,7 +44,6 @@ body {
 }
 
 .month {
-    padding: 20px;
     grid-area: month;
     text-align: center;
     border-radius: 20px 20px 20px 20px;
