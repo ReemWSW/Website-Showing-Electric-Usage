@@ -16,7 +16,6 @@
 
 <body>
     <div class="container">
-
         <header class="container-herder pt-10">
             <h1 class="text-center">Electrical usages from a power meter</h1>
         </header>
@@ -74,7 +73,6 @@
     </div>
 
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angularjs-datepicker/2.1.22/angular-datepicker.js"></script>
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
@@ -107,22 +105,36 @@
                     var dataShow = [];
                     var dataUsage = [];
 
+                    var dataUsageCal = [];
+
                     findTimeInArray(hoursNow);
+
+                    var initUsage = dataUsage[0];
+                    var usage = 0;
+                    for (var i = 0; i < dataUsage.length; i++) {
+                        if (i != dataUsage.length - 1) {
+                            usage = dataUsage[i + 1] - dataUsage[i];
+                            dataUsageCal.push(usage);
+                        }
+                    }
+                    dataShow.pop();
+                    // console.log(dataUsageCal)
+                    // console.log(dataShow.length)
 
                     $scope.colors = ['#FC7D70'];
                     $scope.labels = dataShow;
                     // $scope.labels = []
                     $scope.active = true;
                     $scope.data = [
-                        dataUsage
+                    dataUsageCal
                     ];
                     $scope.options = {
                         scales: {
                             xAxes: [{
-                                stacked: false,
+                                stacked: true,
                             }],
                             yAxes: [{
-                                stacked: false
+                                stacked: true
                             }]
                         }
                     };
