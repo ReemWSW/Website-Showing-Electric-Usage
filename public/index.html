@@ -12,6 +12,7 @@
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/angularjs-datepicker/2.1.23/angular-datepicker.css">
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/date.css">
 </head>
 
 <body>
@@ -22,6 +23,10 @@
         <section ng-app="myApp">
             <div class="container-section">
                 <div class="card day">
+                    <canvas class="chart chart-line" chart-data="data" chart-labels="labels"></canvas>
+                    <label></label>
+                    <input type="date" name="" max="" id="Date">
+                    <br><br>
                     <div class="card-title"><span style="color: blue;">Realtime</span> graph of electric usage with
                         resolution 15 minutes</div>
                     <div class="card-body" ng-controller='realtimeController'>
@@ -49,17 +54,9 @@
                 </div>
                 <div class=" card week">
                     <div class="card-title">Summarize graphs weekly</div>
-                    <div class="card-body" ng-controller="weeklyController">
-                        <canvas class="chart chart-bar" chart-data="data" chart-labels="labels" chart-colors="colors"
-                            chart-options="options" chart-series="series"></canvas>
-                    </div>
-
-                    <script>
-                        function getSelectValue() {
-                            var selectedValue = document.getElementById("Month").value;
-                            console.log(selectedValue);
-                        }
-                    </script>
+                    <canvas class="chart chart-bar" chart-data="data" chart-labels="labels" chart-options="options"
+                        chart-series="series"></canvas>
+                  
                 </div>
                 <div class="card month">
                     <div class="card-title">Summarize graphs monthly</div>
@@ -70,6 +67,7 @@
                 </div>
             </div>
         </section>
+        
     </div>
 
 
