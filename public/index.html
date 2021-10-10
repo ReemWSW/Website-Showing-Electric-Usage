@@ -126,7 +126,7 @@
                     // $scope.labels = []
                     $scope.active = true;
                     $scope.data = [
-                    dataUsageCal
+                        dataUsageCal
                     ];
                     $scope.options = {
                         scales: {
@@ -160,8 +160,36 @@
             app.controller('weeklyController', function ($scope, $http) {
                 $http.get(`${url}api/weekly/timestamp`).then((res) => {
                     // console.log(res.data.data);
+
+                    var tempUsage = [];
+                    var usage = [];
+                    var week = [];
+                    // console.log(res.data.data)
+
+                    var resData = res.data.data;
+                    tempUsage.push(resData[0].electric_usage)
+                    for (var i = 0; i < resData.length; i++) {
+                        var firstDay = new Date(resData[i].time_stamp);
+                        // if sunday and 00:00
+                        if (firstDay.getDay() == 0 && firstDay.getHours() == 0 && firstDay.getMinutes() == 0) {
+                            tempUsage.push(resData[i].electric_usage)
+                        }
+                    }
+
+                    var diffUsage = 0;
+                    for (var i = 0; i < tempUsage.length; i++) {
+                        diffUsage = tempUsage[i + 1] - tempUsage[i];
+                        usage.push(diffUsage);
+                    }
+                    usage.pop()
+
+                    for (var i = 0; i < usage.length; i++) {
+                        var ord = i + 1
+                        week.push("week0" + i)
+                    }
+
                     $scope.colors = ['#361F76'];
-                    $scope.labels = ['week01', 'week02', 'week03', 'week04'];
+                    $scope.labels = week;
                     $scope.type = 'StackedBar';
                     $scope.options = {
                         scales: {
@@ -173,9 +201,8 @@
                             }]
                         }
                     };
-
                     $scope.data = [
-                        [28, 48, 40, 19]
+                        usage
                     ];
                 })
             });
