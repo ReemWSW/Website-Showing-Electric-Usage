@@ -9,6 +9,8 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/angularjs-datepicker/2.1.23/angular-datepicker.css">
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/date.css">
 </head>
@@ -20,31 +22,57 @@
             <h1 class="text-center">Electrical usages from a power meter</h1>
         </header>
         <section ng-app="myApp">
-            <div class="container-section" ng-controller='realtimeController'>
+            <div class="container-section">
                 <div class="card day">
                     <canvas class="chart chart-line" chart-data="data" chart-labels="labels"></canvas>
                     <label></label>
                     <input type="date" name="" max="" id="Date">
                     <br><br>
+                    <div class="card-title"><span style="color: blue;">Realtime</span> graph of electric usage with
+                        resolution 15 minutes</div>
+                    <div class="card-body" ng-controller='realtimeController'>
+                        <div class="container-option">
+                            <select id="Month" onchange="getSelectValue();">
+                                <option value="Month">Month</option>
+                                <option value="January">January</option>
+                                <option value="February">February</option>
+                                <option value="March">March</option>
+                                <option value="April">April</option>
+                                <option value="May">May</option>
+                                <option value="June">June</option>
+                                <option value="July">July</option>
+                                <option value="August">August</option>
+                                <option value="September">September</option>
+                                <option value="October">October</option>
+                                <option value="November">November</option>
+                                <option value="December">December</option>
+                            </select>
+                            <input type="date" class="float-right" name="" max="" id="datepicker">
+                        </div>
+                        <canvas class="chart chart-line" chart-data="data" chart-labels="labels" chart-colors="colors"
+                            chart-options="options"></canvas>
+                    </div>
                 </div>
-                <div class="card week" ng-controller="weeklyController">
+                <div class=" card week">
                     <div class="card-title">Summarize graphs weekly</div>
                     <canvas class="chart chart-bar" chart-data="data" chart-labels="labels" chart-options="options"
                         chart-series="series"></canvas>
                   
                 </div>
-                <div class="card month" ng-controller="monthController">
-                    <div class="card-title">Summarize grahs monthly</div>
-                    <canvas class="chart chart-bar" chart-data="data" chart-labels="labels" chart-options="options"
-                        chart-series="series"></canvas>
+                <div class="card month">
+                    <div class="card-title">Summarize graphs monthly</div>
+                    <div class="card-body" ng-controller="monthController">
+                        <canvas class="chart chart-bar" chart-data="data" chart-labels="labels" chart-colors="colors"
+                            chart-options="options" chart-series="series"></canvas>
+                    </div>
                 </div>
-                <h1></h1>
-
             </div>
         </section>
         
     </div>
 
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angularjs-datepicker/2.1.22/angular-datepicker.js"></script>
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
@@ -68,54 +96,109 @@
             var app = angular.module('myApp', ['chart.js'])
             const url = window.location.href;
 
-            app.controller('monthController', ['$scope', function ($scope) {
-                $scope.labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'August', 'October', 'November', 'December'];
-                $scope.type = 'StackedBar';
-                $scope.options = {
-                    scales: {
-                        xAxes: [{
-                            stacked: true,
-                        }],
-                        yAxes: [{
-                            stacked: true
-                        }]
+            app.controller('realtimeController', function ($scope, $http) {
+                $http.get(`${url}api/realtime`).then((res) => {
+                    // console.log(res.data.data);
+                    var today = new Date();
+                    var hoursNow = today.getHours();
+
+                    var dataShow = [];
+                    var dataUsage = [];
+
+                    findTimeInArray(hoursNow);
+
+                    $scope.colors = ['#FC7D70'];
+                    $scope.labels = dataShow;
+                    // $scope.labels = []
+                    $scope.active = true;
+                    $scope.data = [
+                        dataUsage
+                    ];
+                    $scope.options = {
+                        scales: {
+                            xAxes: [{
+                                stacked: false,
+                            }],
+                            yAxes: [{
+                                stacked: false
+                            }]
+                        }
+                    };
+                    // console.log(dataShow);
+                    // console.log(dataUsage);
+                    function findTimeInArray(hoursNow) {
+                        return res.data.data.filter(
+                            function (data) {
+                                var date = new Date(data.time_stamp);
+                                var getHours = date.getHours();
+                                if (getHours == hoursNow || getHours == hoursNow + 1 || getHours == hoursNow - 1) {
+                                    dataShow.push(`${prependZero(date.getHours())}:${prependZero(date.getMinutes())} น.`)
+                                    dataUsage.push(`${data.electric_usage}`)
+                                }
+                            }
+                        );
                     }
-                };
 
-                $scope.data = [
-                    [28, 48, 40, 50, 96, 27, 50, 28, 48, 40, 19, 40]
-                ];
-            }]);
+                })
+            });
 
-            app.controller('weeklyController', ['$scope', function ($scope) {
-                $scope.labels = ['week01', 'week02', 'week03', 'week04'];
-                $scope.type = 'StackedBar';
-                $scope.options = {
-                    scales: {
-                        xAxes: [{
-                            stacked: true,
-                        }],
-                        yAxes: [{
-                            stacked: true
-                        }]
-                    }
-                };
+            // ${url}api/weekly/timestamp?date=2019-12-12
+            app.controller('weeklyController', function ($scope, $http) {
+                $http.get(`${url}api/weekly/timestamp`).then((res) => {
+                    // console.log(res.data.data);
+                    $scope.colors = ['#361F76'];
+                    $scope.labels = ['week01', 'week02', 'week03', 'week04'];
+                    $scope.type = 'StackedBar';
+                    $scope.options = {
+                        scales: {
+                            xAxes: [{
+                                stacked: false,
+                            }],
+                            yAxes: [{
+                                stacked: true
+                            }]
+                        }
+                    };
 
-                $scope.data = [
-                    [28, 48, 40, 19]
-                ];
-            }]);
+                    $scope.data = [
+                        [28, 48, 40, 19]
+                    ];
+                })
+            });
 
-            app.controller('realtimeController', ['$scope', function ($scope) {
-                $scope.labels = ['00:45', '01:00', '01:15', '01:30', '01:45', '02:00', '02:15', '02:30', '02:45', '03:00', '03:15', '03:30', '03:45'];
-                $scope.active = true;
-                $scope.data = [
-                    [28, 48, 40, 50, 96, 27, 50, 28, 48, 40, 19, 96, 40]
-                ];
-            }]);
+            // ${url}api/month/timestamp?date=2019-12-12&sensor=1
+            app.controller('monthController', function ($scope, $http) {
+                $http.get(`${url}api/month/timestamp`).then((res) => {
+                    // console.log(res.data.data);
+                    $scope.colors = ['#F6AA26'];
+                    $scope.labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                    $scope.type = 'StackedBar';
+                    $scope.options = {
+                        scales: {
+                            xAxes: [{
+                                stacked: false,
+                            }],
+                            yAxes: [{
+                                stacked: true
+                            }]
+                        }
+                    };
 
+                    $scope.data = [
+                        [28, 48, 40, 50, 96, 27, 50, 28, 48, 40, 19, 40]
+                    ];
+                })
+            })
 
         })(window.angular);
+
+        // number return 2 digit
+        function prependZero(number) {
+            if (number <= 9)
+                return "0" + number;
+            else
+                return number;
+        }
     </script>
 
 </body>
