@@ -68,13 +68,13 @@ usageRoute.route("/api/weekly/timestamp").get((req, res, next) => {
 });
 
 // get data with year 
-//  https://[hostname]/api/month/timestamp?date=2019-12-12&sensor=1
+//  https://[hostname]/api/month/timestamp?year=2019&sensor=1
 usageRoute.route("/api/month/timestamp").get((req, res, next) => {
-  var reqDate = req.query.date
+  var reqyear = req.query.date
   var reqSensor = req.query.sensor
 
-  reqDate = reqDate ? new Date(reqDate) : new Date()
-  var dateCon = reqDate
+  reqyear = reqyear ? new Date(reqyear) : new Date()
+  var dateCon = reqyear
   var year = dateCon.getFullYear()
 
   usageModel.find({
