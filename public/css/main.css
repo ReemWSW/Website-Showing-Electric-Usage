@@ -7,7 +7,6 @@ body {
     background-color: rgb(250, 125, 73);
 }
 
-
 .container-herder {
     margin-top: 20px;
     background-color: white;
@@ -19,10 +18,8 @@ body {
 
 .container-section {
     display: grid;
-    grid-template-columns: repeat(2,1fr);
-    grid-template-areas: 
-        'day day'
-        'week month';
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-areas: 'day day' 'week month';
     grid-template-rows: auto;
     gap: 30px;
 }
@@ -49,4 +46,9 @@ body {
     border-radius: 20px 20px 20px 20px;
     color: rgb(255, 67, 16);
     font-size: 25px;
+}
+
+.container-option {
+    width: 120px;
+    font-size: 15px;
 }
