@@ -50,9 +50,10 @@
                 </div>
                 <div class=" card week">
                     <div class="card-title">Summarize graphs weekly</div>
-                    <canvas class="chart chart-bar" chart-data="data" chart-labels="labels" chart-options="options"
-                        chart-series="series"></canvas>
-                  
+                    <div class="card-body" ng-controller="weeklyController">
+                        <canvas class="chart chart-bar" chart-data="data" chart-labels="labels" chart-colors="colors"
+                            chart-options="options" chart-series="series"></canvas>
+                    </div>
                 </div>
                 <div class="card month">
                     <div class="card-title">Summarize graphs monthly</div>
@@ -63,7 +64,7 @@
                 </div>
             </div>
         </section>
-        
+
     </div>
 
 
@@ -179,7 +180,7 @@
 
                     for (var i = 0; i < usage.length; i++) {
                         var ord = i + 1
-                        week.push("week0" + i)
+                        week.push("week0" + ord)
                     }
 
                     $scope.colors = ['#361F76'];
@@ -205,6 +206,9 @@
             app.controller('monthController', function ($scope, $http) {
                 $http.get(`${url}api/month/timestamp`).then((res) => {
                     // console.log(res.data.data);
+
+                    console.log(res.data.data)
+
                     $scope.colors = ['#F6AA26'];
                     $scope.labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
                     $scope.type = 'StackedBar';
