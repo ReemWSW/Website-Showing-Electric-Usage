@@ -79,7 +79,7 @@ usageRoute.route("/api/month/timestamp").get((req, res, next) => {
 
   usageModel.find({
     time_stamp: {
-      $gt: new Date(`${year}-01-01T00:00:26.625Z`),
+      $gte: new Date(`${year}-01-01T00:00:26.625Z`),
       $lte: new Date(`${year}-12-31T23:59:26.625Z`)
     }, sensor_id: reqSensor ? reqSensor : 1
   }, (error, data) => {

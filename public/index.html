@@ -157,7 +157,7 @@
                     // console.log(res.data.data);
 
                     var tempUsage = [];
-                    var usage = [];
+                    var usageWeek = [];
                     var week = [];
                     // console.log(res.data.data)
 
@@ -174,11 +174,11 @@
                     var diffUsage = 0;
                     for (var i = 0; i < tempUsage.length; i++) {
                         diffUsage = tempUsage[i + 1] - tempUsage[i];
-                        usage.push(diffUsage);
+                        usageWeek.push(diffUsage);
                     }
-                    usage.pop()
+                    usageWeek.pop()
 
-                    for (var i = 0; i < usage.length; i++) {
+                    for (var i = 0; i < usageWeek.length; i++) {
                         var ord = i + 1
                         week.push("week0" + ord)
                     }
@@ -197,7 +197,7 @@
                         }
                     };
                     $scope.data = [
-                        usage
+                        usageWeek
                     ];
                 })
             });
@@ -207,7 +207,28 @@
                 $http.get(`${url}api/month/timestamp`).then((res) => {
                     // console.log(res.data.data);
 
-                    console.log(res.data.data)
+                    var resMonth = res.data.data;
+
+                    var monthDate = [];
+                    var usageMonth = [];
+
+                    for (var i = 0; i < resMonth.length; i++) {
+                        var firstDay = new Date(resMonth[i].time_stamp);
+                        // if sunday and 00:00
+                        if (firstDay.getDate() == 1 && firstDay.getHours() == 0 && firstDay.getMinutes() == 0) {
+                            monthDate.push(resMonth[i].electric_usage);
+                        }
+                    }
+
+                    console.log(monthDate);
+                    
+                    var diffMonth = 0;
+                    for (var i = 0; i < monthDate.length; i++) {
+                        diffMonth = monthDate[i + 1] - monthDate[i];
+                        usageMonth.push(diffMonth)
+                    }
+                    
+                    console.log(usageMonth);
 
                     $scope.colors = ['#F6AA26'];
                     $scope.labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -218,13 +239,13 @@
                                 stacked: false,
                             }],
                             yAxes: [{
-                                stacked: true
+                                stacked: false
                             }]
                         }
                     };
 
                     $scope.data = [
-                        [28, 48, 40, 50, 96, 27, 50, 28, 48, 40, 19, 40]
+                        usageMonth
                     ];
                 })
             })
