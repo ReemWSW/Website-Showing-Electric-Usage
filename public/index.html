@@ -16,7 +16,6 @@
 
 <body>
     <div class="container">
-
         <header class="container-herder pt-10">
             <h1 class="text-center">Electrical usages from a power meter</h1>
         </header>
@@ -74,7 +73,6 @@
     </div>
 
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angularjs-datepicker/2.1.22/angular-datepicker.js"></script>
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
@@ -107,22 +105,36 @@
                     var dataShow = [];
                     var dataUsage = [];
 
+                    var dataUsageCal = [];
+
                     findTimeInArray(hoursNow);
+
+                    var initUsage = dataUsage[0];
+                    var usage = 0;
+                    for (var i = 0; i < dataUsage.length; i++) {
+                        if (i != dataUsage.length - 1) {
+                            usage = dataUsage[i + 1] - dataUsage[i];
+                            dataUsageCal.push(usage);
+                        }
+                    }
+                    dataShow.pop();
+                    // console.log(dataUsageCal)
+                    // console.log(dataShow.length)
 
                     $scope.colors = ['#FC7D70'];
                     $scope.labels = dataShow;
                     // $scope.labels = []
                     $scope.active = true;
                     $scope.data = [
-                        dataUsage
+                        dataUsageCal
                     ];
                     $scope.options = {
                         scales: {
                             xAxes: [{
-                                stacked: false,
+                                stacked: true,
                             }],
                             yAxes: [{
-                                stacked: false
+                                stacked: true
                             }]
                         }
                     };
@@ -148,8 +160,36 @@
             app.controller('weeklyController', function ($scope, $http) {
                 $http.get(`${url}api/weekly/timestamp`).then((res) => {
                     // console.log(res.data.data);
+
+                    var tempUsage = [];
+                    var usage = [];
+                    var week = [];
+                    // console.log(res.data.data)
+
+                    var resData = res.data.data;
+                    tempUsage.push(resData[0].electric_usage)
+                    for (var i = 0; i < resData.length; i++) {
+                        var firstDay = new Date(resData[i].time_stamp);
+                        // if sunday and 00:00
+                        if (firstDay.getDay() == 0 && firstDay.getHours() == 0 && firstDay.getMinutes() == 0) {
+                            tempUsage.push(resData[i].electric_usage)
+                        }
+                    }
+
+                    var diffUsage = 0;
+                    for (var i = 0; i < tempUsage.length; i++) {
+                        diffUsage = tempUsage[i + 1] - tempUsage[i];
+                        usage.push(diffUsage);
+                    }
+                    usage.pop()
+
+                    for (var i = 0; i < usage.length; i++) {
+                        var ord = i + 1
+                        week.push("week0" + i)
+                    }
+
                     $scope.colors = ['#361F76'];
-                    $scope.labels = ['week01', 'week02', 'week03', 'week04'];
+                    $scope.labels = week;
                     $scope.type = 'StackedBar';
                     $scope.options = {
                         scales: {
@@ -161,9 +201,8 @@
                             }]
                         }
                     };
-
                     $scope.data = [
-                        [28, 48, 40, 19]
+                        usage
                     ];
                 })
             });
