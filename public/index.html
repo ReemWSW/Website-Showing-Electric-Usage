@@ -65,17 +65,37 @@
 
             app.controller('realtimeController', function ($scope, $http) {
                 $http.get(`${url}api/realtime`).then((res) => {
+                    // console.log(res.data.data);
                     var today = new Date();
                     var hoursNow = today.getHours();
-                    console.log(hoursNow);
-                    console.log(res.data);
-                    // console.log(res.data.data);
-                    $scope.labels = ['00:45', '01:00', '01:15', '01:30', '01:45', '02:00', '02:15', '02:30', '02:45', '03:00', '03:15', '03:30', '03:45'];
+
+                    var dataShow = [];
+                    var dataUsage = [];
+
+                    findTimeInArray(hoursNow);
+                    
+                    $scope.labels = dataShow;
                     // $scope.labels = []
                     $scope.active = true;
                     $scope.data = [
-                        [28, 48, 40, 50, 96, 27, 50, 28, 48, 40, 19, 96, 40]
+                        dataUsage
                     ];
+                    // console.log(dataShow);
+                    // console.log(dataUsage);
+                    function findTimeInArray(hoursNow) {
+                        return res.data.data.filter(
+                            function (data) {
+                                var date = new Date(data.time_stamp);
+                                var getHours = date.getHours();
+                                if (getHours == hoursNow || getHours == hoursNow + 1 || getHours == hoursNow - 1) {
+                                    console.log(data.time_stamp)
+                                    dataShow.push(`${prependZero(date.getHours())}:${prependZero(date.getMinutes())} น.`)
+                                    dataUsage.push(`${data.electric_usage}`)
+                                }
+                            }
+                        );
+                    }
+
                 })
             });
 
@@ -125,6 +145,14 @@
             })
 
         })(window.angular);
+
+        // number return 2 digit
+        function prependZero(number) {
+            if (number <= 9)
+                return "0" + number;
+            else
+                return number;
+        }
     </script>
 
 </body>
