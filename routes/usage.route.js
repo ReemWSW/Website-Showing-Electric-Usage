@@ -2,12 +2,11 @@ const express = require('express');
 const usageRoute = express.Router();
 
 // Usage model
-let usageController = require('../controllers/usage.controller');
 let usageModel = require('../models/Usage');
 
-usageRoute.route('/', usageController.render) // show Page index
+usageRoute.route('/').get((req, res, next) => res.render("index")) // show Page index
 
-//get all data in db
+//get one data in db
 usageRoute.route('/api').get((req, res, next) => {
   usageModel.findOne((error, data) => {
     if (error) {
@@ -19,18 +18,19 @@ usageRoute.route('/api').get((req, res, next) => {
 })
 
 // get data realtime 
-//  https://[hostname]/api/realtime?sensor=1
+// https://[hostname]/api/realtime?sensor=1
 usageRoute.route("/api/realtime").get((req, res, next) => {
-  var reqSensor = req.query.sensor;
+  var reqSensor = req.query.sensor; 
 
-  var today = new Date();
-  var date = today.getFullYear() + '-' + prependZero((today.getMonth() + 1)) + '-' + prependZero(today.getDate());
+  var today = new Date(); // Date right now
+  var date = today.getFullYear() + '-' + prependZero((today.getMonth() + 1)) + '-' + prependZero(today.getDate()); // 2021-10-10  
+
 
   usageModel.find({
     time_stamp: {
-      $gt: new Date(`${date}T00:00:00.625z`),
-      $lte: new Date(`${date}T23:55:00.625z`)
-    }, sensor_id: reqSensor ? reqSensor : 1
+      $gt: new Date(`${date}T00:00:00.625z`), 
+      $lte: new Date(`${date}T23:55:00.625z`) 
+    }, sensor_id: reqSensor ? reqSensor : 1 
   }, (error, data) => {
     if (error) {
       next(error);
@@ -42,7 +42,7 @@ usageRoute.route("/api/realtime").get((req, res, next) => {
 })
 
 // get data with date weekly
-//  https://[hostname]/api/weekly/timestamp?date=2019-12-12&sensor=1
+// https://[hostname]/api/weekly/timestamp?date=2019-12-12&sensor=1
 usageRoute.route("/api/weekly/timestamp").get((req, res, next) => {
   var reqDate = req.query.date
   var reqSensor = req.query.sensor
@@ -68,7 +68,7 @@ usageRoute.route("/api/weekly/timestamp").get((req, res, next) => {
 });
 
 // get data with year 
-//  https://[hostname]/api/month/timestamp?date=2019-12-12?date=2019-12-12&sensor=1
+//  https://[hostname]/api/month/timestamp?date=2019-12-12&sensor=1
 usageRoute.route("/api/month/timestamp").get((req, res, next) => {
   var reqDate = req.query.date
   var reqSensor = req.query.sensor
