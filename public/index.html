@@ -24,9 +24,9 @@
                 <div class="card day">
                     <div class="card-title"><span style="color: blue;">Realtime</span> graph of electric usage with resolution 15 minutes</div>
                     <div class="card-body" ng-controller='realtimeController'>
-                        <div class="container-option">
+                        <!-- <div class="container-option">
                             <input type="date" class="float-right" name="" max="" id="datepicker">
-                        </div>
+                        </div> -->
                         <canvas class="chart chart-line" chart-data="data" chart-labels="labels" chart-colors="colors" chart-options="options"></canvas>
                     </div>
                 </div>
@@ -34,7 +34,7 @@
                     <div class="card-title">Summarize graphs weekly</div>
                     <div class="card-body" ng-controller="weeklyController">
 
-                        <select id="Month" onchange="getSelectValue();">
+                        <!-- <select id="Month" onchange="getSelectValue();">
                                 <option value="Month">Month</option>
                                 <option value="January">January</option>
                                 <option value="February">February</option>
@@ -48,39 +48,28 @@
                                 <option value="October">October</option>
                                 <option value="November">November</option>
                                 <option value="December">December</option>
-                                </select>
+                                </select> -->
 
                         <canvas class="chart chart-bar" chart-data="data" chart-labels="labels" chart-colors="colors" chart-options="options" chart-series="series"></canvas>
                     </div>
-                    <<<<<<< HEAD <script>
-                        function getSelectValue() { var selectedValue = document.getElementById("Month").value; console.log(selectedValue); }
-                        </script>
-                        =======
-                </div>
-                <div class=" card week">
-                    <div class="card-title">Summarize graphs weekly</div>
-                    <div class="card-body" ng-controller="weeklyController">
-                        <canvas class="chart chart-bar" chart-data="data" chart-labels="labels" chart-colors="colors" chart-options="options" chart-series="series"></canvas>
-                    </div>
-                    >>>>>>> e71961c5f7ac61f42a71c4b879364d33b492732b
+                  
                 </div>
                 <div class="card month">
                     <div class="card-title">Summarize graphs monthly</div>
                     <div class="card-body" ng-controller="monthController">
-                        <select id="Years" onchange="getSelectValue();">
+                        <!-- <select id="Years" onchange="getSelectValue();">
                             <option value="Years">Years</option>
                             <option value="2017">2017</option>
                             <option value="2018">2018</option>
                             <option value="2019">2019</option>
                             <option value="2020">2020</option>
                             <option value="2021">2021</option>
-                        </select>
+                        </select> -->
                         <canvas class="chart chart-bar" chart-data="data" chart-labels="labels" chart-colors="colors" chart-options="options" chart-series="series"></canvas>
                     </div>
                 </div>
             </div>
         </section>
-        <<<<<<< HEAD=======>>>>>>> e71961c5f7ac61f42a71c4b879364d33b492732b
     </div>
 
 
