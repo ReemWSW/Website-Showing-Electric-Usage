@@ -52,13 +52,17 @@
 
                         <canvas class="chart chart-bar" chart-data="data" chart-labels="labels" chart-colors="colors" chart-options="options" chart-series="series"></canvas>
                     </div>
-
-                    <script>
-                        function getSelectValue() {
-                            var selectedValue = document.getElementById("Month").value;
-                            console.log(selectedValue);
-                        }
-                    </script>
+                    <<<<<<< HEAD <script>
+                        function getSelectValue() { var selectedValue = document.getElementById("Month").value; console.log(selectedValue); }
+                        </script>
+                        =======
+                </div>
+                <div class=" card week">
+                    <div class="card-title">Summarize graphs weekly</div>
+                    <div class="card-body" ng-controller="weeklyController">
+                        <canvas class="chart chart-bar" chart-data="data" chart-labels="labels" chart-colors="colors" chart-options="options" chart-series="series"></canvas>
+                    </div>
+                    >>>>>>> e71961c5f7ac61f42a71c4b879364d33b492732b
                 </div>
                 <div class="card month">
                     <div class="card-title">Summarize graphs monthly</div>
@@ -76,10 +80,10 @@
                 </div>
             </div>
         </section>
+        <<<<<<< HEAD=======>>>>>>> e71961c5f7ac61f42a71c4b879364d33b492732b
     </div>
 
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angularjs-datepicker/2.1.22/angular-datepicker.js"></script>
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
@@ -106,26 +110,38 @@
                     var dataShow = [];
                     var dataUsage = [];
 
+                    var dataUsageCal = [];
+
                     findTimeInArray(hoursNow);
 
-                    for (var i = 0; i < res.data.data.length; i++) {
-                        console.log(res.data.data[i]);
-                    }
 
-                    $scope.colors = ['#00fff2'];
+                    var initUsage = dataUsage[0];
+                    var usage = 0;
+                    for (var i = 0; i < dataUsage.length; i++) {
+                        if (i != dataUsage.length - 1) {
+                            usage = dataUsage[i + 1] - dataUsage[i];
+                            dataUsageCal.push(usage);
+                        }
+                    }
+                    dataShow.pop();
+                    // console.log(dataUsageCal)
+                    // console.log(dataShow.length)
+
+                    $scope.colors = ['#FC7D70'];
+
                     $scope.labels = dataShow;
                     // $scope.labels = []
                     $scope.active = true;
                     $scope.data = [
-                        dataUsage
+                        dataUsageCal
                     ];
                     $scope.options = {
                         scales: {
                             xAxes: [{
-                                stacked: false,
+                                stacked: true,
                             }],
                             yAxes: [{
-                                stacked: false
+                                stacked: true
                             }]
                         }
                     };
@@ -152,8 +168,38 @@
             app.controller('weeklyController', function($scope, $http) {
                 $http.get(`${url}api/weekly/timestamp`).then((res) => {
                     // console.log(res.data.data);
-                    $scope.colors = ['#22ff00'];
-                    $scope.labels = ['week01', 'week02', 'week03', 'week04'];
+
+
+                    var tempUsage = [];
+                    var usageWeek = [];
+                    var week = [];
+                    // console.log(res.data.data)
+
+                    var resData = res.data.data;
+                    tempUsage.push(resData[0].electric_usage)
+                    for (var i = 0; i < resData.length; i++) {
+                        var firstDay = new Date(resData[i].time_stamp);
+                        // if sunday and 00:00
+                        if (firstDay.getDay() == 0 && firstDay.getHours() == 0 && firstDay.getMinutes() == 0) {
+                            tempUsage.push(resData[i].electric_usage)
+                        }
+                    }
+
+                    var diffUsage = 0;
+                    for (var i = 0; i < tempUsage.length; i++) {
+                        diffUsage = tempUsage[i + 1] - tempUsage[i];
+                        usageWeek.push(diffUsage);
+                    }
+                    usageWeek.pop()
+
+                    for (var i = 0; i < usageWeek.length; i++) {
+                        var ord = i + 1
+                        week.push("week0" + ord)
+                    }
+
+                    $scope.colors = ['#361F76'];
+                    $scope.labels = week;
+
                     $scope.type = 'StackedBar';
                     $scope.options = {
                         scales: {
@@ -165,9 +211,8 @@
                             }]
                         }
                     };
-
                     $scope.data = [
-                        [28, 48, 40, 19]
+                        usageWeek
                     ];
                 })
             });
@@ -176,7 +221,32 @@
             app.controller('monthController', function($scope, $http) {
                 $http.get(`${url}api/month/timestamp`).then((res) => {
                     // console.log(res.data.data);
-                    $scope.colors = ['#f82d97'];
+
+
+                    var resMonth = res.data.data;
+
+                    var monthDate = [];
+                    var usageMonth = [];
+
+                    for (var i = 0; i < resMonth.length; i++) {
+                        var firstDay = new Date(resMonth[i].time_stamp);
+                        // if sunday and 00:00
+                        if (firstDay.getDate() == 1 && firstDay.getHours() == 0 && firstDay.getMinutes() == 0) {
+                            monthDate.push(resMonth[i].electric_usage);
+                        }
+                    }
+
+                    console.log(monthDate);
+
+                    var diffMonth = 0;
+                    for (var i = 0; i < monthDate.length; i++) {
+                        diffMonth = monthDate[i + 1] - monthDate[i];
+                        usageMonth.push(diffMonth)
+                    }
+
+                    console.log(usageMonth);
+
+                    $scope.colors = ['#F6AA26'];
                     $scope.labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
                     $scope.type = 'StackedBar';
                     $scope.options = {
@@ -185,13 +255,13 @@
                                 stacked: false,
                             }],
                             yAxes: [{
-                                stacked: true
+                                stacked: false
                             }]
                         }
                     };
 
                     $scope.data = [
-                        [28, 48, 40, 50, 96, 27, 50, 28, 48, 40, 19, 40]
+                        usageMonth
                     ];
                 })
             })
